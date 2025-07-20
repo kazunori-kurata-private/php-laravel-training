@@ -4,14 +4,23 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-Route::view('/', 'index');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// ブログ一覧・詳細表示
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 
 // お問い合わせフォーム
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'sendMail']);
 Route::get('/contact/complete', [ContactController::class, 'complete'])->name('contact.complete');
+
+// ねこちゃん一覧
+Route::get('/cats', [\App\Http\Controllers\CatController::class, 'index'])->name('cats.index');
 
 // 管理者用ルート
 Route::prefix('admin')->name('admin.')->group(function () {
