@@ -34,6 +34,7 @@ class UpdateBlogRequest extends FormRequest
             ],
             'body' => ['required', 'max:20000'],
             'cats.*' => ['distinct', 'exists:cats,id'],
+            'user_id' => ['required', 'exists:users,id'],
         ];
     }
 

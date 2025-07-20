@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateBlogRequest;
 use App\Models\Blog;
 use App\Models\Cat;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class AdminBlogController extends Controller
@@ -15,7 +16,7 @@ class AdminBlogController extends Controller
     // ブログ一覧画面
     public function index()
     {
-        $blogs = Blog::orderBy('updated_at', 'desc')
+        $blogs = Blog::with('user')->orderBy('updated_at', 'desc')
             ->paginate(10);
         return view('admin.blogs.index', ['blogs' => $blogs]);
     }
@@ -36,6 +37,7 @@ class AdminBlogController extends Controller
     {
         $validated = $request->validated();
         $validated['image'] = $request->file('image')->store('blogs', 'public');
+        $validated['user_id'] = Auth::id(); // 追加
         $blog = Blog::create($validated);
         $blog->category()->associate($validated['category_id']);
         $blog->cats()->sync($validated['cats'] ?? []);
@@ -72,6 +74,7 @@ class AdminBlogController extends Controller
             Storage::disk('public')->delete($blog->image);
             $validated['image'] = $request->file('image')->store('blogs', 'public');
         }
+        $validated['user_id'] = Auth::id(); // 追加
         $blog->category()->associate($validated['category_id']);
         $blog->update($validated);
         $blog->cats()->sync($validated['cats'] ?? []);
