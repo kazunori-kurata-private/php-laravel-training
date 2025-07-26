@@ -28,7 +28,7 @@
                         <p class="font-medium"><a href="{{ route('admin.blogs.edit', ['blog' => $blog]) }}">{{ $blog->title }}</a></p>
                     </td>
                     <td class="font-medium">{{ $blog->category->name }}</td>
-                    <td class="font-medium">高橋</td>
+                    <td class="font-medium">{{ $blog->user ? $blog->user->name : '不明' }}</td>
                     <td>{{ $blog->updated_at }}</td>
                     <td>
                         <div class="flex">

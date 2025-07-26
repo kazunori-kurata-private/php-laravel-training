@@ -13,58 +13,20 @@
 <section class="py-20 bg-blueGray-50">
   <div class="container px-4 mx-auto">
     <div class="flex flex-wrap">
+      @foreach($cats as $cat)
         <div class="w-full md:w-1/2 py-5 md:px-5">
-            <div class="px-6 bg-white shadow rounded h-full py-10">
-                <div class="flex items-center mb-4">
-                    <img class="h-16 w-16 rounded-full object-cover" src="/images/placeholders/cats/cat1.jpg" alt="">
-                    <div class="pl-4">
-                        <p class="text-xl">アルト</p>
-                        <p class="text-blueGray-400">シンガプーラ(♂5さい)</p>
-                    </div>
-                </div>
-                <p class="leading-loose text-blueGray-400 mb-5 whitespace-pre-line">好奇心が旺盛で、運動神経も良い。
-                    じっとしていられない性格で疲れて寝るまでうろうろしている。</p>
+          <div class="px-6 bg-white shadow rounded h-full py-10">
+            <div class="flex items-center mb-4">
+              <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('storage/' . $cat->image) }}" alt="{{ $cat->name }}">
+              <div class="pl-4">
+                <p class="text-xl">{{ $cat->name }}</p>
+                <p class="text-blueGray-400">{{ $cat->breed }}({{ $cat->gender == 1 ? '♂' : '♀' }}{{ \Carbon\Carbon::parse($cat->date_of_birth)->age }}さい)</p>
+              </div>
             </div>
+            <p class="leading-loose text-blueGray-400 mb-5 whitespace-pre-line">{{ $cat->introduction }}</p>
+          </div>
         </div>
-        <div class="w-full md:w-1/2 py-5 md:px-5">
-            <div class="px-6 py-10 bg-white shadow rounded h-full">
-                <div class="flex items-center mb-4">
-                    <img class="h-16 w-16 rounded-full object-cover" src="/images/placeholders/cats/cat2.jpg" alt="">
-                    <div class="pl-4">
-                        <p class="text-xl">リリー</p>
-                        <p class="text-blueGray-400">ラガマフィン(♀1さい)</p>
-                    </div>
-                </div>
-                <p class="leading-loose text-blueGray-400 mb-5 whitespace-pre-line">遊ぶ時は他の子のおもちゃを奪うほどの情熱家。
-                    でも気変わりが多くすぐ別の事を始める。</p>
-            </div>
-        </div>
-        <div class="w-full md:w-1/2 py-5 md:px-5">
-            <div class="px-6 bg-white shadow rounded h-full py-10">
-                <div class="flex items-center mb-4">
-                    <img class="h-16 w-16 rounded-full object-cover" src="/images/placeholders/cats/cat1.jpg" alt="">
-                    <div class="pl-4">
-                        <p class="text-xl">アルト</p>
-                        <p class="text-blueGray-400">シンガプーラ(♂5さい)</p>
-                    </div>
-                </div>
-                <p class="leading-loose text-blueGray-400 mb-5 whitespace-pre-line">好奇心が旺盛で、運動神経も良い。
-                    じっとしていられない性格で疲れて寝るまでうろうろしている。</p>
-            </div>
-        </div>
-        <div class="w-full md:w-1/2 py-5 md:px-5">
-            <div class="px-6 py-10 bg-white shadow rounded h-full">
-                <div class="flex items-center mb-4">
-                    <img class="h-16 w-16 rounded-full object-cover" src="/images/placeholders/cats/cat2.jpg" alt="">
-                    <div class="pl-4">
-                        <p class="text-xl">リリー</p>
-                        <p class="text-blueGray-400">ラガマフィン(♀1さい)</p>
-                    </div>
-                </div>
-                <p class="leading-loose text-blueGray-400 mb-5 whitespace-pre-line">遊ぶ時は他の子のおもちゃを奪うほどの情熱家。
-                    でも気変わりが多くすぐ別の事を始める。</p>
-            </div>
-        </div>
+      @endforeach
     </div>
   </div>
 </section>

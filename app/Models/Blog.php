@@ -14,6 +14,7 @@ class Blog extends Model
         'title',
         'image',
         'body',
+        'user_id',
     ];
 
     public function category()
@@ -24,5 +25,10 @@ class Blog extends Model
     public function cats()
     {
         return $this->belongsToMany(Cat::class)->withTimestamps();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

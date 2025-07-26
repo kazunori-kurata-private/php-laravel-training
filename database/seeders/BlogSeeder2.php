@@ -30,6 +30,7 @@ class BlogSeeder2 extends Seeder
                     'title' => 'ダミー記事'. $no,
                     'image' => 'blogs/dummy.jpg',
                     'body' => "ブログ記事のダミー本文です。\nここで改行されています\n\nここには空行が設定されています\n<p>ここはpタグで囲われています</p><script>alert('アラートが実行されたらXSS対策不備')</script>",
+                    'user_id' => random_int(1, 2), // 追加
                     'created_at' => $created_at,
                     'updated_at' => $updated_at
                 ];
