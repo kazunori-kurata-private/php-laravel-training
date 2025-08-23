@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -23,7 +24,7 @@ Route::get('/contact/complete', [ContactController::class, 'complete'])->name('c
 Route::get('/cats', [\App\Http\Controllers\CatController::class, 'index'])->name('cats.index');
 
 // 管理者用ルート
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('admin.ip')->group(function () {
     // 未ログイン時のみアクセス可能なルート
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -32,14 +33,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // ログイン時のみアクセス可能なルート
     Route::middleware('auth')->group(function () {
-        // ブログ管理
-        Route::resource('blogs', AdminBlogController::class)->except('show');
+        // ダッシュボード（全ユーザー）
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // ブログ管理（staffとmanagerのみ、adminは除外）
+        Route::middleware('role:staff')->group(function () {
+            Route::resource('blogs', AdminBlogController::class)->except('show');
+        });
 
-        // ユーザー管理
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        // ユーザー管理（adminのみ）
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        });
 
-        // ログアウト
+        // ログアウト（全ユーザー）
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
