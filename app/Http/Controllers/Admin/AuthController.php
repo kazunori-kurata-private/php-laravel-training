@@ -11,7 +11,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('admin.blogs.index');
+            return redirect()->route('admin.dashboard');
         }
         return view('admin.login');
     }
@@ -31,8 +31,8 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // ミドルウェアに対応したリダイレクト(後述)
-            // 下記はredirect('/admin/blogs')に類似
-            return redirect()->intended('/admin/blogs');
+            // 下記はredirect('/admin')に類似
+            return redirect()->intended('/admin');
         }
 
         // ログイン情報が正しくない場合のみ実行される処理(return すると以降の処理は実行されないため)
