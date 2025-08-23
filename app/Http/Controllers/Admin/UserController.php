@@ -27,6 +27,10 @@ class UserController extends Controller
     // ユーザー登録処理
     public function store(StoreUserRequest $request)
     {
+        $user = Auth::user();
+        if (!$user->isAdmin()) {
+            abort(403, 'ユーザーを登録する権限がありません。');
+        }
         $validated = $request->validated();
         $validated['image'] = $request->file('image')->store('users', 'public');
         $validated['password'] = Hash::make($validated['password']);

@@ -2,6 +2,7 @@
 
 @section('content')
 <section class="py-8">
+    @if(user_can('create_blogs'))
     <div class="container px-4 mx-auto">
         <div class="py-4 bg-white rounded">
             <form action="{{ route('admin.blogs.store') }}" method="post" enctype="multipart/form-data">
@@ -73,6 +74,13 @@
             </form>
         </div>
     </div>
+    @else
+    <div class="container px-4 mx-auto">
+        <div class="py-4 bg-white rounded">
+            <h2 class="text-xl font-bold">ブログ登録権限がありません。</h2>
+        </div>
+    </div>
+    @endif
 </section>
 
 <script>

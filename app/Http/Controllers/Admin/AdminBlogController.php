@@ -16,7 +16,8 @@ class AdminBlogController extends Controller
     // ブログ一覧画面
     public function index()
     {
-        $blogs = Blog::with('user')->orderBy('updated_at', 'desc')
+        $blogs = Blog::with(['user', 'category', 'cats'])
+            ->orderBy('updated_at', 'desc')
             ->paginate(10);
         return view('admin.blogs.index', ['blogs' => $blogs]);
     }
@@ -24,6 +25,10 @@ class AdminBlogController extends Controller
     // ブログ投稿画面
     public function create()
     {
+        $user = Auth::user();
+        if (!$user->canCreateBlogs()) {
+            abort(403, 'ブログを投稿する権限がありません。');
+        }
         $categories = Category::all();
         $cats = Cat::all();
         return view('admin.blogs.create', [
@@ -35,6 +40,10 @@ class AdminBlogController extends Controller
     // ブログ投稿処理
     public function store(StoreBlogRequest $request)
     {
+        $user = Auth::user();
+        if (!$user->canCreateBlogs()) {
+            abort(403, 'ブログを投稿する権限がありません。');
+        }
         $validated = $request->validated();
         $validated['image'] = $request->file('image')->store('blogs', 'public');
         $validated['user_id'] = Auth::id(); // 追加
@@ -56,6 +65,11 @@ class AdminBlogController extends Controller
     // 指定したIDのブログ編集画面
     public function edit(Blog $blog)
     {
+        // 新しい権限チェック関数を使用
+        if (!can_edit_blog($blog)) {
+            abort(403, 'このブログを編集する権限がありません。');
+        }
+        
         $categories = Category::all();
         $cats = Cat::all();
         return view('admin.blogs.edit', [
@@ -68,7 +82,13 @@ class AdminBlogController extends Controller
     // 指定したIDのブログ更新処理
     public function update(UpdateBlogRequest $request, string $id)
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with(['user', 'category', 'cats'])->findOrFail($id);
+        
+        // 新しい権限チェック関数を使用
+        if (!can_edit_blog($blog)) {
+            abort(403, 'このブログを更新する権限がありません。');
+        }
+        
         $validated = $request->validated();
         if ($request->has('image')) {
             Storage::disk('public')->delete($blog->image);
@@ -85,7 +105,13 @@ class AdminBlogController extends Controller
     // 指定したIDのブログ削除処理
     public function destroy(string $id)
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with(['user', 'category', 'cats'])->findOrFail($id);
+        
+        // 新しい権限チェック関数を使用
+        if (!can_delete_blog($blog)) {
+            abort(403, 'このブログを削除する権限がありません。');
+        }
+        
         $blog->cats()->detach();
         $blog->delete();
         Storage::disk('public')->delete($blog->image);

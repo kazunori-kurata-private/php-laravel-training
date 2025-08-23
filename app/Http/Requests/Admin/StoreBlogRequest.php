@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBlogRequest extends FormRequest
@@ -11,7 +12,8 @@ class StoreBlogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = Auth::user();
+        return $user && !$user->isAdmin();
     }
 
     /**
@@ -34,7 +36,7 @@ class StoreBlogRequest extends FormRequest
             ],
             'body' => ['required', 'max:20000'],
             'cats.*' => ['distinct', 'exists:cats,id'],
-            'user_id' => ['required', 'exists:users,id'],
+            // 'user_id' => ['required', 'exists:users,id'],
         ];
     }
 
