@@ -22,3 +22,37 @@
 - [ ] 管理画面お問い合わせ管理
 - [ ] 管理画面ねこ管理追加
 - [ ] カテゴリー追加
+
+## 開発環境構築手順（Windows 11）
+1. 予め`Docker Desktop`をインストールしておく（詳細手順省略）
+1. `wsl2`をセットアップ（Ubuntu Noble Numbatで実施済み。詳細手順省略）
+1. 本リポジトリを`git clone`
+1. 以下コマンドで`composer install`
+```bash
+docker run --rm \
+  -v $(pwd):/app \
+  -w /app \
+  composer install
+```
+1. 以下コマンドでエイリアス登録
+```bash
+echo $SHELL
+echo "alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'" >> ~/.bashrc
+exec $SHELL -l
+sail artisan -V
+```
+1. 以下で起動
+```bash
+sail up -d
+```
+1. 以下でマイグレーション
+```bash
+sail artisan migrate
+# Seeder登録する場合は以下を実行
+sail artisan migrate:fresh --seed
+```
+
+### 停止時
+```bash
+sail down
+```
