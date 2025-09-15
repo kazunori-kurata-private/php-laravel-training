@@ -16,10 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware
             ->redirectGuestsTo(fn() => route('admin.login'))
-            ->redirectUsersTo(fn() => route('admin.blogs.index'))
+            ->redirectUsersTo(fn() => route('admin.dashboard'))
             ->alias([
                 'admin.ip' => \App\Http\Middleware\AdminIpRestriction::class,
                 'role' => \App\Http\Middleware\CheckRole::class,
+                '2fa' => \App\Http\Middleware\RequireTwoFactor::class,
+                '2fa.not.configured' => \App\Http\Middleware\RedirectIfTwoFactorNotConfigured::class,
             ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -27,6 +27,18 @@ class AuthController extends Controller
         // ログイン情報が正しいか
         // Auth::attemptメソッドでログイン情報が正しいか検証
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            // 2FAが有効な場合の処理
+            if ($user->two_factor_secret && $user->two_factor_confirmed_at) {
+                // セッションにログインIDを保存（2FA検証用）
+                $request->session()->put('login.id', $user->id);
+                $request->session()->put('2fa_required', true);
+                
+                // 2FAチャレンジ画面にリダイレクト
+                return redirect()->route('admin.two-factor.challenge');
+            }
+            
             // セッションを再生成する処理(セキュリティ対策)
             $request->session()->regenerate();
 
